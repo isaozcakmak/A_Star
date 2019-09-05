@@ -1,10 +1,6 @@
 // AStarAlgorithm2.cpp : Defines the entry point for the console application.
 //
 
-//#define _CRT_SECURE_NO_WARNINGS
-
-
-//#include "stdafx.h"
 #include <stdio.h>
 #include "Node.h"
 
@@ -18,7 +14,6 @@ int main()
 	/************/
 
 	FILE* neighborhoodMatrixFilePointer;
-	//neighborhoodMatrixFilePointer = fopen("NeighborhoodMatrix.txt", "rb");
 	neighborhoodMatrixFilePointer = fopen("NeighborhoodMatrix.txt", "r");
 
 	if (neighborhoodMatrixFilePointer == NULL)
@@ -32,30 +27,21 @@ int main()
 	while ( ! feof(neighborhoodMatrixFilePointer) )
 	{
 		int number;
-		//fread(&number,sizeof(int),1,neighborhoodMatrixFilePointer);
 		fscanf(neighborhoodMatrixFilePointer, "%d", &number);
-		//printf("%d ",number);
-
 		neighborhoodMatrix[i].push_back(number);
 
 		char character;
-		//fread(&character, sizeof(char), 1, neighborhoodMatrixFilePointer);
 		fscanf(neighborhoodMatrixFilePointer, "%c", &character);
-		//printf("%c",character);
 
 		if (character == '\r')
 		{
-			//printf("\n");
 			++i;
 			neighborhoodMatrix.push_back(std::vector<int>());
 		}
 
 	}
 
-	//printf("\n");
-
 	FILE* heuristicValuesFilePointer;
-	//neighborhoodMatrixFilePointer = fopen("NeighborhoodMatrix.txt", "rb");
 	heuristicValuesFilePointer = fopen("HeuristicValues.txt", "r");
 
 	if (heuristicValuesFilePointer == NULL)
@@ -77,7 +63,6 @@ int main()
 
 
 	FILE* StartAndEndNodeNumberFilePointer;
-	//neighborhoodMatrixFilePointer = fopen("NeighborhoodMatrix.txt", "rb");
 	StartAndEndNodeNumberFilePointer = fopen("StartAndEndNodeNumber.txt", "r");
 
 	if (StartAndEndNodeNumberFilePointer == NULL)
@@ -102,16 +87,6 @@ int main()
 	fclose(neighborhoodMatrixFilePointer);
 	fclose(heuristicValuesFilePointer);
 	fclose(StartAndEndNodeNumberFilePointer);
-
-	/*for (int i = 0; i < neighborhoodMatrix.size(); i++)
-	{
-		for (int j = 0; j < neighborhoodMatrix[i].size(); j++)
-		{
-
-			printf("%d ", neighborhoodMatrix[i][j]);
-		}
-		printf("\n");
-	}*/
 
 	/************/
 	/****FILE****/
@@ -164,9 +139,6 @@ int main()
 
 	AStar(graph, startAndEndNodeValues[0], startAndEndNodeValues[1]);
 
-
-	//getchar();
-
     return 0;
 }
 
@@ -175,14 +147,6 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 
 	std::vector< std::vector<Node> > queue;
 	int currentNode = startNode;
-
-	// Queue Is Empty 
-	// Initialize Queue
-	/*for (size_t i = 0; i < graph[currentNode].edgeVector.size(); i++)
-	{
-		queue.push_back(std::vector<Node>());
-		queue[i].push_back( graph[ graph[currentNode].edgeVector[i].destination ] );
-	}*/
 
 	queue.push_back(std::vector<Node>());
 	queue[0].push_back(graph[currentNode]);
@@ -196,7 +160,6 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 		pathLength = INT_MAX;
 
 		// Get Min Value Queue
-
 		for (size_t i = 0; i < queue.size(); i++)
 		{
 			int tempLength = 0;
@@ -209,11 +172,7 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 
 				if ( j == ( queue[i].size() -1 ) )
 				{
-					// Real Length + Heuristic Length 
-					//tempLength += queue[i][j].heuristic;
-
 					int tempHeuristicLength = INT_MAX;
-					//int tempHeuristicNumber = 0;
 
 					for (size_t k = 0; k < queue[i][j].edgeVector.size(); k++)
 					{
@@ -229,7 +188,6 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 							{
 								tempHeuristicLength = currentHeuristicLength;
 								addHeuristicNumber = k;
-								//tempHeuristicNumber = k;
 							}
 						}
 
@@ -237,7 +195,6 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 
 
 					tempLength += tempHeuristicLength;
-					//addHeuristicNumber = tempHeuristicNumber;
 
 				}
 				else
@@ -245,7 +202,6 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 					// Real Length
 					for (size_t k = 0; k < queue[i][j].edgeVector.size(); k++)
 					{
-						//if ( queue[i][j].edgeVector[k].destination == ( j + 1 ) )
 						if ( queue[i][j].edgeVector[k].destination == queue[i][j+1].NodeNumber)
 						{
 							tempLength += queue[i][j].edgeVector[k].weight;
@@ -267,7 +223,6 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 		}
 
 
-
 		std::vector<int> containsNumber;
 		for (size_t i = 0; i < queue[pathNumber].size(); i++)
 		{
@@ -277,22 +232,6 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 		// Add Queue
 		for (size_t i = 0; i < queue[pathNumber][ queue[pathNumber].size() -1  ].edgeVector.size(); i++)
 		{
-			/*if ( i == addHeuristicNumber )
-			{
-				queue[pathNumber].push_back(
-					graph[queue[pathNumber][queue[pathNumber].size() - 1].edgeVector[i].destination]
-											);
-				currentNode = queue[pathNumber][queue[pathNumber].size() - 2].edgeVector[i].destination;
-
-			}
-			else
-			{
-				queue.push_back(queue[pathNumber]);
-				queue[queue.size() - 1].push_back(
-					graph[queue[pathNumber][queue[pathNumber].size() - 1].edgeVector[i].destination]
-												);
-			}*/
-
 			if (i != addHeuristicNumber &&  
 				( ! (std::find(containsNumber.begin(), containsNumber.end(), queue[pathNumber][queue[pathNumber].size() - 1].edgeVector[i].destination) != containsNumber.end()))
 				)
@@ -322,13 +261,10 @@ void AStar(std::vector<Node> graph, int startNode, int endNode)
 
 	for (size_t i = 0; i < queue[pathNumber].size(); i++)
 	{
-		//i != (queue[pathNumber].size() - 1) ? printf("%d => ", queue[pathNumber][i].NodeNumber) : printf("%d ", queue[pathNumber][i].NodeNumber);
 		printf("%d %s", queue[pathNumber][i].NodeNumber, i == (queue[pathNumber].size() -1) ? "\n" : "=> " );
 	}
 
 }
-
-
 
 
 
